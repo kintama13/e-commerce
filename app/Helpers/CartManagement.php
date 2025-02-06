@@ -9,27 +9,27 @@ class CartManagement {
     // add item to cart
     static public function addItemsToCart($product_id) {
         $cart_items = self::getCartItemsFromCookie();
-
         $existing_item = null;
-
         foreach ($cart_items as $key => $item) {
             if ($item["product_id"] == $product_id) {
                 $existing_item = $key;
                 break;
             }
         }
-
         if ($existing_item !== null) {
             $cart_items[$existing_item]["quantity"]++;
             $cart_items[$existing_item]["total_amount"] = $cart_items[$existing_item]["quantity"] *
             $cart_items[$existing_item]['unit_amount'];
         } else {
             $product = Product::where('id', $product_id)->first(['id', 'name', 'price', 'images']);
+
             if ($product) {
+                $images = is_string($product->images) ? json_decode($product->images, true) : $product->images;
+                $image = !empty($images) && is_array($images) ? $images[0] : null;
                 $cart_items[] = [
                     'product_id' => $product_id,
                     'name' => $product->name,
-                    'image' => $product->image[0],
+                    'image' => $image,
                     'quantity' => 1,
                     'unit_amount' => $product->price,
                     'total_amount' => $product->price,
