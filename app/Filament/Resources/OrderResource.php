@@ -55,7 +55,8 @@ class OrderResource extends Resource
                                 'atm' => 'ATM',
                                 'cod' => 'Cash on Delivery',
                                 'alfamart' => 'Alfamart',
-                                'indomaret' => 'Indomaret'
+                                'indomaret' => 'Indomaret',
+                                'stripe' => 'Stripe',
                             ])
                             ->required(),
 
@@ -165,7 +166,7 @@ class OrderResource extends Resource
                                         $total += $get("items.{$key}.total_amount");
                                     }
                                     $set('grand_total', $total);
-                                    return Number::currency($total, 'IDR');
+                                    return 'Rp ' . number_format($total, 0, ',', '.');
                                 }),
                             Hidden::make('grand_total')
                                 ->default(0)
